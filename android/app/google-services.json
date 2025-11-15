@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802309752240",
+    "project_id": "ecokids2-4face",
+    "storage_bucket": "ecokids2-4face.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802309752240:android:9e384b43f30ce5d2d18275",
+        "android_client_info": {
+          "package_name": "com.example.ecokids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDC6TXvD7fIRIIj4CVikCc8YjOa594gWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
