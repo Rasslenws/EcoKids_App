@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/widgets/eco_text_field.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../home/presentation/pages/home_page.dart';
 import '../../presentation/providers/auth_provider.dart';
 import 'signup_page.dart';
 //import '../../../home/presentation/pages/home_page.dart';
@@ -105,12 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                   _passCtrl.text.trim(),
                 );
                 if (!mounted) return;
-                /*if (ok) {
+                if (ok) {
                   Navigator.pushReplacementNamed(
                     context,
                     HomePage.routeName,
                   );
-                }*/
+                }
               },
             ),
             const SizedBox(height: 20),
