@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/firestore_quiz_repository.dart';
 import '../../domain/entities/quiz_entity.dart';
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
         child: IndexedStack(
           index: _tabIndex,
           children: [
-            _buildHomeTab(user?.name ?? ''),
+            _buildHomeTab(user?.name ?? 'Kid'),
             const Center(child: Text('Library')),
             const Center(child: Text('Quizzes')),
             const Center(child: Text('Profile')),
@@ -42,171 +43,119 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // HOME TAB
+  // ---------------- HOME TAB ----------------
 
   Widget _buildHomeTab(String name) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(top: 60, bottom: 60),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopBar(name),
-          const SizedBox(height: 16),
-          _buildXpCard(),
-          const SizedBox(height: 24),
-          const Text(
-            'Featured Categories',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+          // Header section (old design)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: _buildTopBar(name),
+          ),
+          const SizedBox(height: 25),
+
+          // XP card (old design)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: _XPProgressCard(),
+          ),
+          const SizedBox(height: 30),
+
+          // Featured categories title
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              'Featured Categories',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1E272E),
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          _buildCategoriesRow(),
-          const SizedBox(height: 24),
-          const Text(
-            'Available Quizzes',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+          const SizedBox(height: 15),
+
+          // Categories row (old horizontal chips style)
+          const _CategoryGrid(),
+          const SizedBox(height: 30),
+
+          // Available quizzes title
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              'Available Quizzes',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1E272E),
+              ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 15),
+
+          // Quiz list from Firestore (but styled like old _QuizCard)
           _buildQuizList(),
         ],
       ),
     );
   }
 
+  // ---------------- TOP BAR (HEADER) ----------------
+
   Widget _buildTopBar(String name) {
     return Row(
-      children: [
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Text(
               'Hello $name !',
               style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1E272E),
               ),
             ),
             const SizedBox(height: 4),
             const Text(
               'Nice to see you again',
               style: TextStyle(
-                fontSize: 13,
-                color: Color(0xFF9E9E9E),
+                fontSize: 16,
+                color: Color(0xFF808e9b),
               ),
             ),
           ],
         ),
-        const Spacer(),
         Container(
-          width: 32,
-          height: 32,
+          padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E0),
-            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: const Icon(
             Icons.notifications_none,
-            size: 20,
-            color: Color(0xFFFFA726),
+            color: Color(0xFF1E272E),
+            size: 28,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildXpCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF3E0),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '280 XP Points',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: const LinearProgressIndicator(
-              value: 0.6, // 60%
-              minHeight: 8,
-              backgroundColor: Colors.white,
-              color: Color(0xFFFFA726),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Level 2',
-                style: TextStyle(fontSize: 12),
-              ),
-              Text(
-                'Level 5',
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCategoriesRow() {
-    final cats = [
-      ('Animals', Icons.pets),
-      ('Seasons', Icons.wb_sunny_outlined),
-      ('Ecosystems', Icons.forest_outlined),
-      ('Sky & Space', Icons.public),
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: cats
-          .map(
-            (c) => Column(
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E0),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(
-                c.$2,
-                color: const Color(0xFFFFA726),
-                size: 28,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              c.$1,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      )
-          .toList(growable: false),
-    );
-  }
+  // ---------------- QUIZ LIST (uses Firestore) ----------------
 
   Widget _buildQuizList() {
     return StreamBuilder<List<QuizEntity>>(
@@ -223,7 +172,7 @@ class _HomePageState extends State<HomePage> {
 
         if (snapshot.hasError) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
               'Error loading quizzes',
               style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -235,7 +184,7 @@ class _HomePageState extends State<HomePage> {
 
         if (quizzes.isEmpty) {
           return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
             child: Text(
               'No quizzes available yet.',
               style: TextStyle(fontSize: 13, color: Color(0xFF9E9E9E)),
@@ -258,6 +207,206 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// ---------------- XP CARD (old design) ----------------
+
+class _XPProgressCard extends StatelessWidget {
+  const _XPProgressCard();
+
+  @override
+  Widget build(BuildContext context) {
+    const int currentXp = 280;
+    const int level2Start = 200;
+    const int level3Start = 500;
+
+    final double progress =
+    ((currentXp - level2Start) / (level3Start - level2Start))
+        .clamp(0.0, 1.0);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFFD700).withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF8C00),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.flash_on,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Text(
+                  '$currentXp XP Points',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E272E),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Stack(
+                  children: [
+                    Container(
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    FractionallySizedBox(
+                      widthFactor: progress,
+                      child: Container(
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFD700),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Level 2',
+                      style:
+                      TextStyle(fontSize: 12, color: Color(0xFF808e9b)),
+                    ),
+                    Text(
+                      'Level 3',
+                      style:
+                      TextStyle(fontSize: 12, color: Color(0xFF808e9b)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------- CATEGORY GRID (old horizontal design) ----------------
+
+class _CategoryGrid extends StatelessWidget {
+  const _CategoryGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = [
+      {
+        'icon': Icons.pets,
+        'label': 'Animals',
+        'color': const Color(0xFFE55A38)
+      },
+      {
+        'icon': Icons.filter_hdr,
+        'label': 'Seasons',
+        'color': const Color(0xFF795548)
+      },
+      {
+        'icon': Icons.eco,
+        'label': 'Ecosystems',
+        'color': const Color(0xFFF9A825)
+      },
+      {
+        'icon': Icons.public,
+        'label': 'Sky & Space',
+        'color': const Color(0xFF03A9F4)
+      },
+    ];
+
+    return SizedBox(
+      height: 120,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 15),
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return _CategoryItem(
+            icon: category['icon'] as IconData,
+            label: category['label'] as String,
+            color: category['color'] as Color,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CategoryItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _CategoryItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(35),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: Colors.white, size: 35),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Color(0xFF1E272E),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------- QUIZ CARD (styled like old one, data from QuizEntity) ----------------
+
 class _QuizCard extends StatelessWidget {
   final QuizEntity quiz;
 
@@ -265,105 +414,138 @@ class _QuizCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        leading: Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E0),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          // Replace with Image.asset if you have quiz icons:
-          // child: Image.asset('assets/images/animal_quiz.png'),
-          child: const Icon(
-            Icons.pets,
-            color: Color(0xFFFFA726),
-          ),
+    // Pick a color based on level or category if you like
+    final Color imageColor = const Color(0xFFFFD700);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+          side: BorderSide(color: Colors.grey.shade200, width: 1),
         ),
-        title: Text(
-          quiz.title,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(
-              quiz.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF757575),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E0),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        size: 14,
-                        color: Color(0xFFFFA726),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: <Widget>[
+              Stack(
+                children: [
+                  Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: imageColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.brightness_5,
+                        color: imageColor,
+                        size: 40,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Level ${quiz.level}',
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+    /*
+                      child: Text(
+                        '${quiz.questionCount} Qs',
                         style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFFFA726),
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                      */
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      quiz.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E272E),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      quiz.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF808e9b),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: <Widget>[
+                        const Icon(
+                          Icons.star,
+                          color: Color(0xFFFFD700),
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Level ${quiz.level}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF808e9b),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Icon(
+                          Icons.flare,
+                          color: Color(0xFFFF8C00),
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '+${quiz.xp} XP',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF808e9b),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  '+ ${quiz.xp} XP',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF4CAF50),
-                  ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // TODO: navigate to quiz details / questions
+                },
+                child: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Color(0xFFBDBDBD),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Color(0xFFBDBDBD),
-        ),
-        onTap: () {
-          // TODO: navigate to quiz details / questions
-        },
       ),
     );
   }
