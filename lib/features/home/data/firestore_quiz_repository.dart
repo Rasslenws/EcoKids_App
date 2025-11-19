@@ -5,21 +5,23 @@ import '../domain/entities/quiz_entity.dart';
 class FirestoreQuizRepository {
   final _db = FirebaseFirestore.instance;
 
-  Stream<List<QuizEntity>> watchFeaturedQuizzes() {
+  Stream<List<QuizEntity>> watchFeaturedQuizzes(int level) {
     return _db
         .collection('quizzes')
-        .orderBy('level')
+        .where('level', isEqualTo: level)   // filtre par niveau
+    // .orderBy('title')                // désactivé pour le test
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) {
       final d = doc.data();
       return QuizEntity(
         id: doc.id,
-        title: d['title'],
-        description: d['description'],
-        category: d['category'],
-        level: d['level'],
-        xp: d['xp'],
+        title: d['title'] as String,
+        description: d['description'] as String,
+        category: d['category'] as String,
+        level: d['level'] as int,
+        xp: d['xp'] as int,
       );
     }).toList());
   }
 }
+

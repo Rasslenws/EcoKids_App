@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 25),
 
-          // XP card (old design)
+          // XP card (dynamic from Firestore user)
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: _XPProgressCard(),
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 15),
 
-          // Quiz list from Firestore (but styled like old _QuizCard)
+          // Quiz list from Firestore (styled like old _QuizCard)
           _buildQuizList(),
         ],
       ),
@@ -155,11 +155,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ---------------- QUIZ LIST (uses Firestore) ----------------
+  // ---------------- QUIZ LIST (uses Firestore, filtered by user level) ----------------
 
   Widget _buildQuizList() {
+    // Lire le niveau de l'utilisateur depuis AuthProvider
+    final auth = context.watch<AuthProvider>();
+    final user = auth.currentUser;
+    final int userLevel = user?.level ?? 1; // niveau 1 par défaut
+
     return StreamBuilder<List<QuizEntity>>(
-      stream: _quizRepo.watchFeaturedQuizzes(),
+      stream: _quizRepo.watchFeaturedQuizzes(userLevel),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -207,22 +212,20 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// ---------------- XP CARD (old design) ----------------
+// ---------------- XP CARD (dynamic from Firestore user) ----------------
 
 class _XPProgressCard extends StatelessWidget {
   const _XPProgressCard();
 
   @override
   Widget build(BuildContext context) {
-    // Récupère l'utilisateur depuis AuthProvider (Firestore)
     final auth = context.watch<AuthProvider>();
     final user = auth.currentUser;
 
-    // Valeurs venant de Firestore (users/{uid})
     final int currentXp = user?.xp ?? 0;
     final int currentLevel = user?.level ?? 1;
 
-    // Logique simple : 100 XP par niveau (adapte si besoin)
+    // Exemple : 100 XP par niveau (tu peux ajuster)
     final int xpPerLevel = 100;
     final int levelStart = (currentLevel - 1) * xpPerLevel;
     final int nextLevelStart = currentLevel * xpPerLevel;
@@ -427,7 +430,6 @@ class _QuizCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Pick a color based on level or category if you like
     final Color imageColor = const Color(0xFFFFD700);
 
     return Padding(
@@ -460,6 +462,9 @@ class _QuizCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Si plus tard tu ajoutes questionCount dans QuizEntity,
+                  // tu peux réactiver ce badge.
+                  /*
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -472,7 +477,6 @@ class _QuizCard extends StatelessWidget {
                         color: Colors.black.withOpacity(0.7),
                         borderRadius: BorderRadius.circular(8),
                       ),
-    /*
                       child: Text(
                         '${quiz.questionCount} Qs',
                         style: const TextStyle(
@@ -481,9 +485,9 @@ class _QuizCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      */
                     ),
                   ),
+                  */
                 ],
               ),
               const SizedBox(width: 15),
