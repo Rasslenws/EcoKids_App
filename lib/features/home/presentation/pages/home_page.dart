@@ -214,12 +214,21 @@ class _XPProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int currentXp = 280;
-    const int level2Start = 200;
-    const int level3Start = 500;
+    // Récupère l'utilisateur depuis AuthProvider (Firestore)
+    final auth = context.watch<AuthProvider>();
+    final user = auth.currentUser;
 
-    final double progress =
-    ((currentXp - level2Start) / (level3Start - level2Start))
+    // Valeurs venant de Firestore (users/{uid})
+    final int currentXp = user?.xp ?? 0;
+    final int currentLevel = user?.level ?? 1;
+
+    // Logique simple : 100 XP par niveau (adapte si besoin)
+    final int xpPerLevel = 100;
+    final int levelStart = (currentLevel - 1) * xpPerLevel;
+    final int nextLevelStart = currentLevel * xpPerLevel;
+
+    final double progress = ((currentXp - levelStart) /
+        (nextLevelStart - levelStart))
         .clamp(0.0, 1.0);
 
     return Container(
@@ -255,9 +264,9 @@ class _XPProgressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
+                Text(
                   '$currentXp XP Points',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1E272E),
@@ -286,18 +295,22 @@ class _XPProgressCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Level 2',
-                      style:
-                      TextStyle(fontSize: 12, color: Color(0xFF808e9b)),
+                      'Level $currentLevel',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF808e9b),
+                      ),
                     ),
                     Text(
-                      'Level 3',
-                      style:
-                      TextStyle(fontSize: 12, color: Color(0xFF808e9b)),
+                      'Level ${currentLevel + 1}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF808e9b),
+                      ),
                     ),
                   ],
                 ),
