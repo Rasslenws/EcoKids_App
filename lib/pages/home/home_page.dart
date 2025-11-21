@@ -6,6 +6,7 @@ import '../../services/quiz_service.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../widgets/quiz_card.dart';
 import 'quizzes_page.dart';
+import '../learn/learn_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
           index: _tabIndex,
           children: [
             _buildHomeTab(user?.name ?? 'Kid'),
-            const Center(child: Text('Library')),
+            const LearnPage(),
             const QuizzesPage(),
             const Center(child: Text('Profile')),
           ],

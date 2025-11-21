@@ -4,6 +4,8 @@ import '../pages/auth/login_page.dart';
 import '../pages/auth/signup_page.dart';
 import '../pages/home/home_page.dart';
 import '../pages/quiz/quiz_page.dart';
+import '../pages/learn/learn_detail_page.dart';
+import '../models/learn_game_model.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -17,9 +19,9 @@ class AppRouter {
       case HomePage.routeName:
         return MaterialPageRoute(builder: (_) => const HomePage());
 
-    // Nouveau cas pour la page de Quiz
+
+
       case QuizPage.routeName:
-      // On s'attend à recevoir une Map avec l'ID, le Titre et l'XP
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (_) => QuizPage(
@@ -28,6 +30,13 @@ class AppRouter {
             quizXp: args['quizXp'],
           ),
         );
+
+      case LearnDetailPage.routeName:
+        final game = settings.arguments as LearnGameModel;
+        return MaterialPageRoute(
+          builder: (_) => LearnDetailPage(game: game),
+        );
+
 
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());
