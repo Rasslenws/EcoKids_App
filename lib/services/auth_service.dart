@@ -26,6 +26,7 @@ class AuthService extends ChangeNotifier {
         email: user.email ?? '',
         xp: data?['xp'] ?? 0,
         level: data?['level'] ?? 1,
+        quizzesPlayed: data?['quizzesPlayed'] ?? 0,
       );
     }).listen((userModel) {
       currentUser = userModel;
@@ -47,6 +48,7 @@ class AuthService extends ChangeNotifier {
         email: email,
         xp: data['xp'] ?? 0,
         level: data['level'] ?? 1,
+        quizzesPlayed: data['quizzesPlayed'] ?? 0,
       );
       return true;
     } catch (e) {
@@ -70,9 +72,10 @@ class AuthService extends ChangeNotifier {
         'email': email,
         'xp': 0,
         'level': 1,
+        'quizzesPlayed': 0,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      currentUser = UserModel(id: uid, name: name, email: email);
+      currentUser = UserModel(id: uid, name: name, email: email, quizzesPlayed: 0,);
       return true;
     } catch (e) {
       error = e.toString();
@@ -100,6 +103,7 @@ class AuthService extends ChangeNotifier {
 
       final newXp = currentUser!.xp + xp;
       final newLevel = (newXp / 100).floor() + 1;
+      final newNbrQuizzes = currentUser!.quizzesPlayed + 1;
 
       currentUser = UserModel(
         id: currentUser!.id,
@@ -107,10 +111,13 @@ class AuthService extends ChangeNotifier {
         email: currentUser!.email,
         xp: newXp,
         level: newLevel,
+        quizzesPlayed: newNbrQuizzes,
       );
       notifyListeners();
     } catch (e) {
       debugPrint("Failed to award XP: $e");
     }
   }
+
+
 }

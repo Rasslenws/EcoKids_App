@@ -17,6 +17,7 @@ class AppRouter {
       case HomePage.routeName:
         return MaterialPageRoute(builder: (_) => const HomePage());
 
+
     // Nouveau cas pour la page de Quiz
       case QuizPage.routeName:
       // On s'attend à recevoir une Map avec l'ID, le Titre et l'XP
@@ -28,6 +29,7 @@ class AppRouter {
             quizXp: args['quizXp'],
           ),
         );
+
 
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());

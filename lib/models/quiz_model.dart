@@ -5,6 +5,8 @@ class QuizModel {
   final String category;
   final int level;
   final int xp;
+  final int quizzesPlayed;
+
 
   QuizModel({
     required this.id,
@@ -13,5 +15,6 @@ class QuizModel {
     required this.category,
     required this.level,
     required this.xp,
+    required this.quizzesPlayed,
   });
 }

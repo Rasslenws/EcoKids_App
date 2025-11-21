@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/question_model.dart';
 import '../models/quiz_model.dart';
@@ -54,6 +55,7 @@ class QuizService extends ChangeNotifier {
         category: d['category'] as String? ?? '',
         level: (d['level'] as num?)?.toInt() ?? 1,
         xp: (d['xp'] as num?)?.toInt() ?? 0,
+        quizzesPlayed: (d['quizzesPlayed'] as num?)?.toInt() ?? 0,
       );
     }).toList();
   }
@@ -120,6 +122,38 @@ class QuizService extends ChangeNotifier {
     _showFeedback = false;
     notifyListeners();
   }
+
+  Future<void> saveGameToHistory(QuizModel quiz) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    final entry = {
+      'quizId': quiz.id,
+      'title': quiz.title,
+      'description': quiz.description,
+      'category': quiz.category,
+      'level': quiz.level,
+      'xp': quiz.xp,
+      'playedAt': FieldValue.serverTimestamp(),
+    };
+
+    final doc = FirebaseFirestore.instance.collection("users").doc(userId);
+
+    final snapshot = await doc.get();
+    List history = snapshot.data()?['lastPlayedGames'] ?? [];
+
+    history.add(entry);
+
+    // Trier + limiter à 10 entrées
+    history.sort((a, b) =>
+        (b['playedAt'] as Timestamp).compareTo(a['playedAt'] as Timestamp));
+
+    if (history.length > 10) {
+      history = history.sublist(0, 10);
+    }
+
+    await doc.update({"lastPlayedGames": history});
+  }
+
 
   @override
   void dispose() {

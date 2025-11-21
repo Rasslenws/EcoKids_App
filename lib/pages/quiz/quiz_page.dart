@@ -263,11 +263,13 @@ class QuizPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   // Award earned XP and then pop the screen
                   if (earnedXp > 0) {
                     authService.awardXp(earnedXp);
                   }
+
+
                   Navigator.pop(context);
                 },
                 child: const Text(

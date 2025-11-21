@@ -4,6 +4,7 @@ class UserModel {
   final String email;
   final int xp;
   final int level;
+  final quizzesPlayed;
 
   UserModel({
     required this.id,
@@ -11,5 +12,6 @@ class UserModel {
     required this.email,
     this.xp = 0,
     this.level = 1,
+    this.quizzesPlayed,
   });
 }

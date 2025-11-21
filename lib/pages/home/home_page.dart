@@ -5,6 +5,7 @@ import '../../services/auth_service.dart';
 import '../../services/quiz_service.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../widgets/quiz_card.dart';
+import '../profile/profile_page.dart';
 import 'quizzes_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             _buildHomeTab(user?.name ?? 'Kid'),
             const Center(child: Text('Library')),
             const QuizzesPage(),
-            const Center(child: Text('Profile')),
+            const ProfilePage(),
           ],
         ),
       ),
