@@ -28,7 +28,7 @@ class ProfilePage extends StatelessWidget {
                   width: 110,
                   height: 110,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8F1FF),
+                    color: const Color(0xFFFFF4E8),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 4),
                     boxShadow: [
@@ -42,7 +42,7 @@ class ProfilePage extends StatelessWidget {
                   child: const Icon(
                     Icons.person,
                     size: 70,
-                    color: Color(0xFF5A6CEA),
+                    color: Color(0xFFFFA726),
                   ),
                 ),
               ),
@@ -100,7 +100,7 @@ class ProfilePage extends StatelessWidget {
                     "View All",
                     style: TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF5A6CEA),
+                      color: Color(0xFFFFA726),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
