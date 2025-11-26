@@ -58,7 +58,6 @@ class QuizService extends ChangeNotifier {
     }).toList();
   }
 
-  // --- Part 2: Active Quiz State Management (from old Provider) ---
 
   List<QuestionModel> _questions = [];
   int _currentIndex = 0;
