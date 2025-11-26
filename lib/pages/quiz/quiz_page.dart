@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/quiz_service.dart';
 import '../../services/auth_service.dart';
-import '../../models/question_model.dart';
 
 class QuizPage extends StatelessWidget {
   static const routeName = '/quiz';

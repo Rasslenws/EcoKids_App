@@ -42,9 +42,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: EcoBottomNav(
-        index: _tabIndex,
+        index: _tabIndex < 2 ? _tabIndex : _tabIndex + 1, // Map tab index back to nav index
         onChanged: (i) async {
-          if (i == 2) {
+          if (i == 2) { // Camera button
             final cameraService = context.read<CameraService>();
             final imageFile = await cameraService.takePicture();
             if (imageFile != null) {
@@ -56,7 +56,9 @@ class _HomePageState extends State<HomePage> {
               );
             }
           } else {
-            setState(() => _tabIndex = i); // normal navigation for other tabs
+            // Adjust nav index to tab index
+            int newIndex = i > 2 ? i - 1 : i;
+            setState(() => _tabIndex = newIndex);
           }
         },
       ),
