@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import '../../models/quiz_model.dart';
 import '../../services/auth_service.dart';
 import '../../services/quiz_service.dart';
+import '../../services/camera_service.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../widgets/quiz_card.dart';
 import 'quizzes_page.dart';
 import '../learn/learn_page.dart';
+import '../home/display_picture_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -40,7 +42,22 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: EcoBottomNav(
         index: _tabIndex,
-        onChanged: (i) => setState(() => _tabIndex = i),
+        onChanged: (i) async {
+          if (i == 2) {
+            final cameraService = context.read<CameraService>();
+            final imageFile = await cameraService.takePicture();
+            if (imageFile != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DisplayPicturePage(imageFile: imageFile),
+                ),
+              );
+            }
+          } else {
+            setState(() => _tabIndex = i); // normal navigation for other tabs
+          }
+        },
       ),
     );
   }
