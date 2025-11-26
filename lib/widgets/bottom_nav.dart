@@ -27,6 +27,9 @@ class EcoBottomNav extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.menu_book_rounded),
           label: 'Learn',
+        ),BottomNavigationBarItem(
+          icon: Icon(Icons.camera_alt),
+          label: 'Camera',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.quiz_outlined),
