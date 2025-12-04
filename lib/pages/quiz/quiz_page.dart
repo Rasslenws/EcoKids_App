@@ -103,7 +103,7 @@ class QuizPage extends StatelessWidget {
               children: [
                 const SizedBox(height: 10),
 
-                // --- IMAGE (Dynamique depuis Firestore) ---
+                // --- IMAGE ---
                 Container(
                   height: 180,
                   width: double.infinity,
@@ -125,7 +125,7 @@ class QuizPage extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       },
                     )
-                        : Image.asset('assets/images/ecokids_logo.png', fit: BoxFit.contain), // Fallback si vide
+                        : Image.asset('assets/images/ecokids_logo.png', fit: BoxFit.contain),
                   ),
                 ),
 
@@ -199,6 +199,7 @@ class QuizPage extends StatelessWidget {
     return const Center(child: Text("Erreur de chargement"));
   }
 
+  // --- CORRECTION MAJEURE DANS CE WIDGET ---
   Widget _buildResultScreen(BuildContext context, QuizService quizService) {
     final authService = context.read<AuthService>();
     final score = quizService.score;
@@ -214,11 +215,7 @@ class QuizPage extends StatelessWidget {
           children: [
             const Text(
               '🎉 Quiz Terminé ! 🎉',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0276A1),
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0276A1)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -230,26 +227,15 @@ class QuizPage extends StatelessWidget {
               ),
               child: Text(
                 '$score / $total',
-                style: const TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0276A1),
-                ),
+                style: const TextStyle(fontSize: 42, fontWeight: FontWeight.bold, color: Color(0xFF0276A1)),
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Bonnes réponses',
-              style: TextStyle(fontSize: 18, color: Colors.black54),
-            ),
+            const Text('Bonnes réponses', style: TextStyle(fontSize: 18, color: Colors.black54)),
             const SizedBox(height: 32),
             Text(
               '+$earnedXp XP',
-              style: const TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFF8C00),
-              ),
+              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Color(0xFFFF8C00)),
             ),
             const SizedBox(height: 40),
             SizedBox(
@@ -258,24 +244,26 @@ class QuizPage extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0276A1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                onPressed: () {
-                  // Award earned XP and then pop the screen
-                  if (earnedXp > 0) {
-                    authService.awardXp(earnedXp);
+                onPressed: () async {
+                  // 1. On sauvegarde TOUT (XP + Historique + Nombre de quiz)
+                  // Note : la méthode saveQuizHistory gère déjà l'XP et le nbQuizPlayed
+                  await authService.saveQuizHistory(
+                    quizTitle: quizTitle, // On utilise le titre passé au widget
+                    score: score,
+                    totalQuestions: total,
+                    xpEarned: earnedXp,
+                  );
+
+                  // 2. On quitte l'écran
+                  if (context.mounted) {
+                    Navigator.pop(context);
                   }
-                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Retour à l\'accueil',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -305,7 +293,6 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Déterminer la couleur de la bordure et de l'icône
     Color borderColor = Colors.grey.shade200;
     Color iconColor = Colors.transparent;
     IconData? iconData;
@@ -330,17 +317,10 @@ class _OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: borderColor,
-            width: isCorrect || isIncorrect ? 2 : 1.5,
-          ),
+          border: Border.all(color: borderColor, width: isCorrect || isIncorrect ? 2 : 1.5),
           boxShadow: [
             if (isSelected || isCorrect || isIncorrect)
-              BoxShadow(
-                color: borderColor.withOpacity(0.3),
-                blurRadius: 5,
-                spreadRadius: 1,
-              ),
+              BoxShadow(color: borderColor.withOpacity(0.3), blurRadius: 5, spreadRadius: 1),
           ],
         ),
         child: Row(
@@ -350,22 +330,14 @@ class _OptionCard extends StatelessWidget {
               height: 50,
               margin: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: isCorrect
-                    ? Colors.green.withOpacity(0.1)
-                    : isIncorrect
-                    ? Colors.red.withOpacity(0.1)
-                    : const Color(0xFFEAF8FC),
+                color: isCorrect ? Colors.green.withOpacity(0.1) : isIncorrect ? Colors.red.withOpacity(0.1) : const Color(0xFFEAF8FC),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
                   letter,
                   style: TextStyle(
-                    color: isCorrect
-                        ? Colors.green
-                        : isIncorrect
-                        ? Colors.red
-                        : const Color(0xFF0276A1),
+                    color: isCorrect ? Colors.green : isIncorrect ? Colors.red : const Color(0xFF0276A1),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -374,31 +346,17 @@ class _OptionCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
+              child: Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87)),
             ),
             if (iconData != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Icon(iconData, color: iconColor, size: 24),
-              )
+              Padding(padding: const EdgeInsets.only(right: 16), child: Icon(iconData, color: iconColor, size: 24))
             else if (isSelected)
               Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Container(
                   width: 24,
                   height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF0276A1),
-                    border: Border.all(color: Colors.transparent, width: 2),
-                  ),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: const Color(0xFF0276A1), border: Border.all(color: Colors.transparent, width: 2)),
                   child: const Icon(Icons.check, size: 16, color: Colors.white),
                 ),
               ),

@@ -26,6 +26,7 @@ class AuthService extends ChangeNotifier {
         email: user.email ?? '',
         xp: data?['xp'] ?? 0,
         level: data?['level'] ?? 1,
+        nbQuizPlayed: data?['nbQuizPlayed'] ?? 0,
       );
     }).listen((userModel) {
       currentUser = userModel;
@@ -47,6 +48,7 @@ class AuthService extends ChangeNotifier {
         email: email,
         xp: data['xp'] ?? 0,
         level: data['level'] ?? 1,
+        nbQuizPlayed: data['nbQuizPlayed'] ?? 0,
       );
       return true;
     } catch (e) {
@@ -70,6 +72,7 @@ class AuthService extends ChangeNotifier {
         'email': email,
         'xp': 0,
         'level': 1,
+        'nbQuizPlayed': 0,
         'createdAt': FieldValue.serverTimestamp(),
       });
       currentUser = UserModel(id: uid, name: name, email: email);
@@ -93,6 +96,7 @@ class AuthService extends ChangeNotifier {
     return _auth.sendPasswordResetEmail(email: email);
   }
 
+  // Mise à jour de l'XP uniquement (si besoin hors quiz)
   Future<void> awardXp(int xp) async {
     if (currentUser == null || xp <= 0) return;
     try {
@@ -107,10 +111,63 @@ class AuthService extends ChangeNotifier {
         email: currentUser!.email,
         xp: newXp,
         level: newLevel,
+        nbQuizPlayed: currentUser!.nbQuizPlayed,
       );
       notifyListeners();
     } catch (e) {
       debugPrint("Failed to award XP: $e");
+    }
+  }
+
+  // --- CORRECTION CLÉ ICI ---
+  Future<void> saveQuizHistory({
+    required String quizTitle,
+    required int score,
+    required int totalQuestions,
+    required int xpEarned,
+  }) async {
+    if (currentUser == null) return;
+
+    try {
+      // 1. Sauvegarder dans Firestore (Historique)
+      await _db
+          .collection('users')
+          .doc(currentUser!.id)
+          .collection('quiz_history')
+          .add({
+        'quizTitle': quizTitle,
+        'score': score,
+        'totalQuestions': totalQuestions,
+        'xpEarned': xpEarned,
+        'completedAt': FieldValue.serverTimestamp(),
+      });
+
+      // 2. Incrémenter le compteur global dans Firestore
+      await _db.collection('users').doc(currentUser!.id).update({
+        'nbQuizPlayed': FieldValue.increment(1),
+        // On met aussi à jour l'XP dans la base ici pour être sûr
+        'xp': FieldValue.increment(xpEarned),
+      });
+
+      // 3. MISE À JOUR LOCALE (Pour l'affichage instantané)
+      final newXp = currentUser!.xp + xpEarned;
+      final newLevel = (newXp / 100).floor() + 1;
+      final newNbQuiz = currentUser!.nbQuizPlayed + 1;
+
+      currentUser = UserModel(
+        id: currentUser!.id,
+        name: currentUser!.name,
+        email: currentUser!.email,
+        xp: newXp,
+        level: newLevel,
+        nbQuizPlayed: newNbQuiz, // On force le +1 localement
+      );
+
+      // Notifier la ProfilePage que les données ont changé
+      notifyListeners();
+
+    } catch (e) {
+      debugPrint("Failed to save quiz history: $e");
     }
   }
 }

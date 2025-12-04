@@ -9,7 +9,7 @@ import '../../widgets/quiz_card.dart';
 import 'quizzes_page.dart';
 import '../learn/learn_page.dart';
 import '../home/display_picture_page.dart';
-
+import '../profile/profile_page.dart'; // Import the ProfilePage
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
             _buildHomeTab(user?.name ?? 'Kid'),
             const LearnPage(),
             const QuizzesPage(),
-            const Center(child: Text('Profile')),
+            const ProfilePage(), // Now navigates to ProfilePage
           ],
         ),
       ),

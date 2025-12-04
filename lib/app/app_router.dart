@@ -5,6 +5,8 @@ import '../pages/auth/signup_page.dart';
 import '../pages/home/home_page.dart';
 import '../pages/quiz/quiz_page.dart';
 import '../pages/learn/learn_detail_page.dart';
+import '../pages/profile/profile_page.dart';
+import '../pages/profile/quiz_history_page.dart';
 import '../models/learn_game_model.dart';
 
 class AppRouter {
@@ -37,6 +39,11 @@ class AppRouter {
           builder: (_) => LearnDetailPage(game: game),
         );
 
+      case ProfilePage.routeName:
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
+
+      case QuizHistoryPage.routeName:
+        return MaterialPageRoute(builder: (_) => const QuizHistoryPage());
 
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());
