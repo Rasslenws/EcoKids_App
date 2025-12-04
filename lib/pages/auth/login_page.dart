@@ -28,11 +28,6 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -74,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
                     final email = _emailCtrl.text.trim();
                     if (email.isNotEmpty) {
                       auth.sendPasswordReset(email);
-                      // Optionally, show a confirmation snackbar
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Password reset email sent.')),
                       );

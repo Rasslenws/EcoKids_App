@@ -6,6 +6,8 @@ import 'services/auth_service.dart';
 import 'services/quiz_service.dart';
 import 'services/learn_service.dart';
 import 'services/camera_service.dart';
+import 'services/ai_service.dart';
+
 
 
 Future<void> main() async {
@@ -26,6 +28,10 @@ Future<void> main() async {
         ),
         Provider<CameraService>
           (create: (_) => CameraService()
+        ),
+        Provider<AIService>(
+          create: (_) => AIService(),
+          dispose: (_, service) => service.dispose(),
         ),
       ],
       child: const EcoKidsApp(),
