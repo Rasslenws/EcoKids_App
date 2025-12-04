@@ -35,9 +35,9 @@ class AIService {
           .toList();
 
       _isModelLoaded = true;
-      print("✅ Modèle chargé avec succès");
+      print("✅ Model loaded successfully");
     } catch (e) {
-      print("❌ Erreur chargement modèle : $e");
+      print("❌ Error loading model: $e");
       _isModelLoaded = false;
     }
   }
@@ -45,27 +45,27 @@ class AIService {
   Future<String> identifyAnimal(File imageFile) async {
     if (!_isModelLoaded || _interpreter == null) {
       await _loadModel();
-      if (!_isModelLoaded) return "Erreur : Modèle non chargé.";
+      if (!_isModelLoaded) return "Error: Model not loaded.";
     }
 
-    if (_isBusy) return "Analyse en cours...";
+    if (_isBusy) return "Analysis in progress...";
     _isBusy = true;
 
     try {
-      // 1. Lire les bytes du fichier (rapide)
+      // 1. Read file bytes (fast)
       final imageData = await imageFile.readAsBytes();
 
-      // 2. PRÉTRAITEMENT LOURD -> On l'envoie dans un Isolate (thread séparé)
-      // On passe les données brutes à la fonction statique _preprocessImage
+      // 2. HEAVY PREPROCESSING -> Send it to an Isolate (separate thread)
+      // Pass raw data to the static _preprocessImage function
       final List<List<List<List<double>>>> input = await compute(_preprocessImage, imageData);
 
-      // 3. Préparer la sortie
+      // 3. Prepare the output
       var output = List.filled(1 * _labels.length, 0.0).reshape([1, _labels.length]);
 
-      // 4. Inférence (rapide sur ce type de modèle)
+      // 4. Inference (fast on this type of model)
       _interpreter!.run(input, output);
 
-      // 5. Analyse des résultats
+      // 5. Analyze results
       List<double> scores = List<double>.from(output[0]);
       double maxScore = 0;
       int maxIndex = -1;
@@ -81,43 +81,43 @@ class AIService {
         String animal = _labels[maxIndex];
         if (animal.toLowerCase().contains("rien") ||
             animal.toLowerCase().contains("empty")) {
-          return "Aucun animal détecté 🍃";
+          return "No animal detected 🍃";
         }
-        return "C'est un $animal ! 🎉";
+        return "It's a $animal! 🎉";
       } else {
-        return "Je ne suis pas sûr... 🤔";
+        return "I'm not sure... 🤔";
       }
 
     } catch (e) {
-      print("Erreur analyse : $e");
-      return "Erreur technique";
+      print("Analysis error: $e");
+      return "Technical error";
     } finally {
       _isBusy = false;
     }
   }
 
-  // --- FONCTION STATIQUE ISOLÉE ---
-  // Cette fonction tourne dans un autre thread. Elle ne doit pas accéder aux variables de la classe.
+  // --- STATIC ISOLATED FUNCTION ---
+  // This function runs in another thread. It must not access class variables.
   static List<List<List<List<double>>>> _preprocessImage(Uint8List imageData) {
-    // A. Décodage
+    // A. Decode
     var image = img.decodeImage(imageData);
-    if (image == null) throw Exception("Image invalide");
+    if (image == null) throw Exception("Invalid image");
 
-    // B. Rotation (si l'image est plus large que haute, on suppose qu'elle est couchée)
+    // B. Rotation (if the image is wider than it is tall, we assume it's lying down)
     if (image.width > image.height) {
       image = img.copyRotate(image, angle: 90);
     }
 
-    // C. Crop carré
+    // C. Square Crop
     final resizedImage = img.copyResizeCropSquare(image, size: 224);
 
-    // D. Conversion pixel par pixel (C'est ça qui est lent !)
+    // D. Pixel-by-pixel conversion (This is what's slow!)
     var input = List.generate(1, (i) =>
         List.generate(224, (y) =>
             List.generate(224, (x) =>
                 List.generate(3, (c) {
                   var pixel = resizedImage.getPixel(x, y);
-                  // Normalisation 0 à 1
+                  // Normalization 0 to 1
                   if (c == 0) return pixel.r / 255.0;
                   if (c == 1) return pixel.g / 255.0;
                   return pixel.b / 255.0;

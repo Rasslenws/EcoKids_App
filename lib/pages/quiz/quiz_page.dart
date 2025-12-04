@@ -196,10 +196,10 @@ class QuizPage extends StatelessWidget {
   }
 
   Widget _buildErrorState(BuildContext context) {
-    return const Center(child: Text("Erreur de chargement"));
+    return const Center(child: Text("Loading error"));
   }
 
-  // --- CORRECTION MAJEURE DANS CE WIDGET ---
+  // --- MAJOR CORRECTION IN THIS WIDGET ---
   Widget _buildResultScreen(BuildContext context, QuizService quizService) {
     final authService = context.read<AuthService>();
     final score = quizService.score;
@@ -214,7 +214,7 @@ class QuizPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              '🎉 Quiz Terminé ! 🎉',
+              '🎉 Quiz Complete! 🎉',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0276A1)),
               textAlign: TextAlign.center,
             ),
@@ -231,7 +231,7 @@ class QuizPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Bonnes réponses', style: TextStyle(fontSize: 18, color: Colors.black54)),
+            const Text('Correct answers', style: TextStyle(fontSize: 18, color: Colors.black54)),
             const SizedBox(height: 32),
             Text(
               '+$earnedXp XP',
@@ -247,22 +247,22 @@ class QuizPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
                 onPressed: () async {
-                  // 1. On sauvegarde TOUT (XP + Historique + Nombre de quiz)
-                  // Note : la méthode saveQuizHistory gère déjà l'XP et le nbQuizPlayed
+                  // 1. Save EVERYTHING (XP + History + Number of quizzes)
+                  // Note: the saveQuizHistory method already handles XP and nbQuizPlayed
                   await authService.saveQuizHistory(
-                    quizTitle: quizTitle, // On utilise le titre passé au widget
+                    quizTitle: quizTitle, // Use the title passed to the widget
                     score: score,
                     totalQuestions: total,
                     xpEarned: earnedXp,
                   );
 
-                  // 2. On quitte l'écran
+                  // 2. Exit the screen
                   if (context.mounted) {
                     Navigator.pop(context);
                   }
                 },
                 child: const Text(
-                  'Retour à l\'accueil',
+                  'Back to home',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),

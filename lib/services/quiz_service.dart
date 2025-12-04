@@ -49,7 +49,7 @@ class QuizService extends ChangeNotifier {
       final d = doc.data() as Map<String, dynamic>;
       return QuizModel(
         id: doc.id,
-        title: d['title'] as String? ?? 'Sans titre',
+        title: d['title'] as String? ?? 'Untitled',
         description: d['description'] as String? ?? '',
         category: d['category'] as String? ?? '',
         level: (d['level'] as num?)?.toInt() ?? 1,

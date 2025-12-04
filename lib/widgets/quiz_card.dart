@@ -11,10 +11,10 @@ class QuizCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // This map can be expanded or moved to a central theme/config file
     const categoryStyles = {
-      'Animaux': {'icon': Icons.pets, 'color': Color(0xFFE55A38)},
-      'Écosystèmes': {'icon': Icons.eco, 'color': Color(0xFFF9A825)},
-      'Recyclage': {'icon': Icons.recycling, 'color': Color(0xFF4CAF50)},
-      'Énergie': {'icon': Icons.bolt, 'color': Color(0xFF03A9F4)},
+      'Animals': {'icon': Icons.pets, 'color': Color(0xFFE55A38)},
+      'Ecosystems': {'icon': Icons.eco, 'color': Color(0xFFF9A825)},
+      'Recycling': {'icon': Icons.recycling, 'color': Color(0xFF4CAF50)},
+      'Energy': {'icon': Icons.bolt, 'color': Color(0xFF03A9F4)},
       'default': {'icon': Icons.question_mark, 'color': Colors.grey},
     };
 

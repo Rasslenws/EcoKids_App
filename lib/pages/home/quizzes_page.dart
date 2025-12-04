@@ -15,7 +15,7 @@ class _QuizzesPageState extends State<QuizzesPage> {
   int? _selectedLevel;
   String? _selectedCategory;
 
-  final List<String> _categories = ['Animaux', 'Écosystèmes', 'Recyclage', 'Énergie'];
+  final List<String> _categories = ['Animals', 'Ecosystems', 'Recycling', 'Energy'];
   final List<int> _levels = [1, 2, 3];
 
   @override
@@ -23,7 +23,7 @@ class _QuizzesPageState extends State<QuizzesPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
       appBar: AppBar(
-        title: const Text('Tous les Quiz', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('All Quizzes', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 1,
         shadowColor: Colors.black.withOpacity(0.1),
@@ -44,10 +44,10 @@ class _QuizzesPageState extends State<QuizzesPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Filtre par catégorie
+          // Filter by category
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text('Catégories', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700])),
+            child: Text('Categories', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700])),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -73,10 +73,10 @@ class _QuizzesPageState extends State<QuizzesPage> {
             ),
           ),
           const Divider(height: 1),
-          // Filtre par niveau
+          // Filter by level
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text('Niveaux', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700])),
+            child: Text('Levels', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700])),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -86,7 +86,7 @@ class _QuizzesPageState extends State<QuizzesPage> {
               children: _levels.map((level) {
                 final isSelected = _selectedLevel == level;
                 return ChoiceChip(
-                  label: Text('Niveau $level'),
+                  label: Text('Level $level'),
                   selected: isSelected,
                   onSelected: (selected) {
                     setState(() {
@@ -115,13 +115,13 @@ class _QuizzesPageState extends State<QuizzesPage> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Erreur: ${snapshot.error}'));
+          return Center(child: Text('Error: ${snapshot.error}'));
         }
         final quizzes = snapshot.data ?? [];
         if (quizzes.isEmpty) {
           return const Center(
             child: Text(
-              'Aucun quiz trouvé pour ces filtres.',
+              'No quizzes found for these filters.',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           );

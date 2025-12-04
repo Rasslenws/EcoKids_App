@@ -13,25 +13,25 @@ class DisplayPicturePage extends StatefulWidget {
 }
 
 class _DisplayPicturePageState extends State<DisplayPicturePage> {
-  String _resultText = "Analyse en cours...";
+  String _resultText = "Analyzing...";
   bool _isAnalyzing = true;
-  bool _hasAnalyzed = false; // Drapeau pour éviter la double analyse
+  bool _hasAnalyzed = false; // Flag to avoid double analysis
 
   @override
   void initState() {
     super.initState();
-    // Lancer l'analyse après le premier frame pour être sûr que le contexte est prêt
+    // Start analysis after the first frame to ensure the context is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startAnalysis();
     });
   }
 
   Future<void> _startAnalysis() async {
-    if (_hasAnalyzed) return; // Stop si déjà fait
+    if (_hasAnalyzed) return; // Stop if already done
     _hasAnalyzed = true;
 
     try {
-      // On récupère l'instance unique du Provider (listen: false car hors du build)
+      // Get the unique instance of the Provider (listen: false because outside of build)
       final aiService = Provider.of<AIService>(context, listen: false);
       final String result = await aiService.identifyAnimal(widget.imageFile);
 
@@ -44,7 +44,7 @@ class _DisplayPicturePageState extends State<DisplayPicturePage> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _resultText = "Erreur inattendue.";
+        _resultText = "Unexpected error.";
         _isAnalyzing = false;
       });
     }
@@ -79,7 +79,7 @@ class _DisplayPicturePageState extends State<DisplayPicturePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Résultat de l'analyse :",
+                  "Analysis result:",
                   style: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
                 const SizedBox(height: 15),
@@ -108,7 +108,7 @@ class _DisplayPicturePageState extends State<DisplayPicturePage> {
                     ),
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
-                      "Retour",
+                      "Back",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),

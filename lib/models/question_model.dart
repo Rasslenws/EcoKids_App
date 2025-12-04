@@ -22,7 +22,7 @@ class QuestionOption {
 class QuestionModel {
   final String id;
   final String questionText;
-  final String imageUri; // Nouveau champ
+  final String imageUri; // New field
   final List<QuestionOption> options;
 
   QuestionModel({

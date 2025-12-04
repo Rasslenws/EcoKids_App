@@ -218,10 +218,10 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategoryGrid() {
     final categories = [
-      {'icon': Icons.pets, 'label': 'Animaux', 'color': const Color(0xFFE55A38)},
-      {'icon': Icons.eco, 'label': 'Écosystèmes', 'color': const Color(0xFFF9A825)},
-      {'icon': Icons.recycling, 'label': 'Recyclage', 'color': const Color(0xFF4CAF50)},
-      {'icon': Icons.bolt, 'label': 'Énergie', 'color': const Color(0xFF03A9F4)},
+      {'icon': Icons.pets, 'label': 'Animals', 'color': const Color(0xFFE55A38)},
+      {'icon': Icons.eco, 'label': 'Ecosystems', 'color': const Color(0xFFF9A825)},
+      {'icon': Icons.recycling, 'label': 'Recycling', 'color': const Color(0xFF4CAF50)},
+      {'icon': Icons.bolt, 'label': 'Energy', 'color': const Color(0xFF03A9F4)},
     ];
 
     return SizedBox(
