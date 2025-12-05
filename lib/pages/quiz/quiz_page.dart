@@ -50,7 +50,6 @@ class QuizPage extends StatelessWidget {
 
     return Column(
       children: [
-        // --- TOP BAR ---
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Row(

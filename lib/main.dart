@@ -14,7 +14,7 @@ import 'services/data_seeder_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await DataSeederService().seedDatabase();
+  //await DataSeederService().seedDatabase();
   runApp(
     MultiProvider(
       providers: [
